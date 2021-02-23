@@ -25,8 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercuryHealth.AutomatedTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercuryHealth.UnitTests", "MercuryHealth.UnitTests\MercuryHealth.UnitTests.csproj", "{CE4F844D-C751-41CA-9DD8-E09924BE8BCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercuryHEalth.CodedUITests", "MercuryHEalth.CodedUITests\MercuryHEalth.CodedUITests.csproj", "{48FC04D2-595D-4807-B50B-01B9900CD038}"
-EndProject
+# Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercuryHEalth.CodedUITests", "MercuryHEalth.CodedUITests\MercuryHEalth.CodedUITests.csproj", "{48FC04D2-595D-4807-B50B-01B9900CD038}"
+# EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "MercuryHealth.Infr", "MercuryHealth.Infr\MercuryHealth.Infr.deployproj", "{2AFDE914-1CAC-4BFB-A622-191F3DA102EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercuryHealth.BatchUploader", "MercuryHealth.BatchUploader\MercuryHealth.BatchUploader.csproj", "{ACF1AE81-40DB-4F2A-82CC-3CAB172D4BF9}"
