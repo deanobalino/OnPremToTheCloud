@@ -42,19 +42,17 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(build.artifactStagingDirectory)'
-    Contents: |
-      **/MercuryHealth.Web.zip
-      **/*.dacpac
+    Contents: '**/MercuryHealth.Web.zip'
     TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
-    
-- task: PublishPipelineArtifact@1
+
+- task: CopyFiles@2
   inputs:
-    targetPath: '$(build.artifactStagingDirectory)\artifacts\MercuryHealth.Web.zip'
-    artifact: 'web'
-    publishLocation: 'pipeline'
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**/*.dacpac'
+    TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(build.artifactStagingDirectory)\artifacts\MercuryHealth.Sql\bin\Release\MercuryHealth.Sql.dacpac'
-    artifact: 'web'
+    targetPath: '$(build.artifactStagingDirectory)\artifacts'
+    artifact: 'artifacts'
     publishLocation: 'pipeline'
