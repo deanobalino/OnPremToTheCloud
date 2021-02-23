@@ -49,6 +49,12 @@ steps:
     
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(build.artifactStagingDirectory)/artifacts'
-    artifact: 'artifacts'
+    targetPath: '$(build.artifactStagingDirectory)\artifacts\MercuryHealth.Web.zip'
+    artifact: 'web'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(build.artifactStagingDirectory)\artifacts\MercuryHealth.Sql\bin\Release\MercuryHealth.Sql.dacpac'
+    artifact: 'web'
     publishLocation: 'pipeline'
