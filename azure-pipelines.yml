@@ -28,6 +28,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- powershell: ls D:\a\1\a
+
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
