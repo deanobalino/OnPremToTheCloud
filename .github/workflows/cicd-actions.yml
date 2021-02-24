@@ -59,8 +59,10 @@ jobs:
         path: artifacts
     - run: |
         echo "Deploying to on-premises IIS using the deploy CMD in the zip"
+      name: "IIS Deployment to Test"
     - run: |
         echo "Deploying SQL DACPAC using SQLPackage"
+      name: "SQL DACPAC to Test with SQLPackage"
         
   DeployProd:
     runs-on: [self-hosted, prod]
@@ -76,5 +78,7 @@ jobs:
         path: artifacts
     - run: |
         echo "Deploying to on-premises IIS using the deploy CMD in the zip"
+      name: "IIS Deployment to Prod"
     - run: |
         echo "Deploying SQL DACPAC using SQLPackage"
+      name: "SQL DACPAC to Prod with SQLPackage"
