@@ -69,7 +69,6 @@ stages:
 
 
   - stage: DeployToTest
-    pool: 
     dependsOn: Build
     variables:
     - group: TestVariables
@@ -93,7 +92,7 @@ stages:
                   DatabaseName: '$(databaseName)'
                   AuthScheme: 'windowsAuthentication'
                   
-                  
+
   - stage: DeployToProd
     pool: 
     dependsOn: DeployToTest
