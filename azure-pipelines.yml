@@ -28,7 +28,9 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- powershell: ls D:\a\1\a
+- powershell: |
+    ls D:\a\1\a
+    ls D:\a\1
 
 - task: VSTest@2
   inputs:
