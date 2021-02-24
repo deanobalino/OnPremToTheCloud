@@ -49,10 +49,11 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: '**/*.dacpac'
+    flattenFolders: true
     TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(build.artifactStagingDirectory)\artifacts'
+    targetPath: '$(build.artifactStagingDirectory)/artifacts'
     artifact: 'artifacts'
     publishLocation: 'pipeline'
