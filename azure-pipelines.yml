@@ -14,50 +14,107 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
+stages:
+  - stage: Build
+    jobs:
+    - job: BuildApplication
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+      steps:
+      - task: NuGetToolInstaller@1
+      
+      - task: NuGetCommand@2
+        inputs:
+          restoreSolution: '$(solution)'
+      
+      - task: VSBuild@1
+        inputs:
+          solution: '$(solution)'
+          msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+          platform: '$(buildPlatform)'
+          configuration: '$(buildConfiguration)'
+      
+      - powershell: |
+          ls D:\a\1\a
+          ls D:\a\1
+      
+      - task: VSTest@2
+        inputs:
+          testSelector: 'testAssemblies'
+          testAssemblyVer2: |
+            **\*tests.dll
+            !**\*TestAdapter.dll
+            !**\obj\**
+          searchFolder: '$(System.DefaultWorkingDirectory)'
+          platform: '$(buildPlatform)'
+          configuration: '$(buildConfiguration)'
+      
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(build.artifactStagingDirectory)'
+          Contents: '**/MercuryHealth.Web.zip'
+          TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
+      
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)'
+          Contents: '**/*.dacpac'
+          flattenFolders: true
+          TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
+      
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(build.artifactStagingDirectory)/artifacts'
+          artifact: 'artifacts'
+          publishLocation: 'pipeline'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
 
-- powershell: |
-    ls D:\a\1\a
-    ls D:\a\1
-
-- task: VSTest@2
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\*tests.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(build.artifactStagingDirectory)'
-    Contents: '**/MercuryHealth.Web.zip'
-    TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
-
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**/*.dacpac'
-    flattenFolders: true
-    TargetFolder: '$(build.artifactStagingDirectory)/artifacts'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(build.artifactStagingDirectory)/artifacts'
-    artifact: 'artifacts'
-    publishLocation: 'pipeline'
+  - stage: DeployToTest
+    pool: 
+    dependsOn: Build
+    variables:
+    - group: TestVariables
+    jobs:
+      - deployment: DeployTestApplication
+        environment: MercuryWeb-Test.OnPremServer
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: IISWebAppDeploymentOnMachineGroup@0
+                inputs:
+                  WebSiteName: '$(websiteName)'
+                  Package: '$(Pipeline.Workspace)\**\*.zip'
+              - task: SqlDacpacDeploymentOnMachineGroup@0
+                inputs:
+                  TaskType: 'dacpac'
+                  DacpacFile: '$(Pipeline.Workspace)\**\*.dacpac'
+                  TargetMethod: 'server'
+                  ServerName: 'localhost'
+                  DatabaseName: '$(databaseName)'
+                  AuthScheme: 'windowsAuthentication'
+                  
+                  
+  - stage: DeployToProd
+    pool: 
+    dependsOn: DeployToTest
+    variables:
+    - group: ProductionVariables
+    jobs:
+      - deployment: DeployProdApplication
+        environment: MercuryWeb-Prod.OnPremServer
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: IISWebAppDeploymentOnMachineGroup@0
+                inputs:
+                  WebSiteName: '$(websiteName)'
+                  Package: '$(Pipeline.Workspace)\**\*.zip'
+              - task: SqlDacpacDeploymentOnMachineGroup@0
+                inputs:
+                  TaskType: 'dacpac'
+                  DacpacFile: '$(Pipeline.Workspace)\**\*.dacpac'
+                  TargetMethod: 'server'
+                  ServerName: 'localhost'
+                  DatabaseName: '$(databaseName)'
+                  AuthScheme: 'windowsAuthentication'
