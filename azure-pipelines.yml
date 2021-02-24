@@ -94,7 +94,6 @@ stages:
                   
 
   - stage: DeployToProd
-    pool: 
     dependsOn: DeployToTest
     variables:
     - group: ProductionVariables
