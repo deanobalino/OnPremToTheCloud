@@ -32,6 +32,7 @@ jobs:
 
     - run: |
         echo "Running VSTest"
+        Start-Sleep -s 15
       shell: powershell
       name: Run Test cases
       
@@ -59,9 +60,11 @@ jobs:
         path: artifacts
     - run: |
         echo "Deploying to on-premises IIS using the deploy CMD in the zip"
+        Start-Sleep -s 45
       name: "IIS Deployment to Test"
     - run: |
         echo "Deploying SQL DACPAC using SQLPackage"
+        Start-Sleep -s 58
       name: "SQL DACPAC to Test with SQLPackage"
         
   DeployProd:
@@ -78,7 +81,9 @@ jobs:
         path: artifacts
     - run: |
         echo "Deploying to on-premises IIS using the deploy CMD in the zip"
+        Start-Sleep -s 40
       name: "IIS Deployment to Prod"
     - run: |
         echo "Deploying SQL DACPAC using SQLPackage"
+        Start-Sleep -s 56
       name: "SQL DACPAC to Prod with SQLPackage"
