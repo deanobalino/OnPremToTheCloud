@@ -99,7 +99,7 @@ stages:
     - group: ProductionVariables
     jobs:
       - deployment: DeployProdApplication
-        environment: MercuryWeb-Prod.OnPremServer
+        environment: MercuryWeb-Prod.OnPremServerProd
         strategy:
           runOnce:
             deploy:
