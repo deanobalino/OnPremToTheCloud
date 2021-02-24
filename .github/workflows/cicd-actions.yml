@@ -37,7 +37,7 @@ jobs:
       
     - run: Copy '${{ github.workspace }}/MercuryHealth.Web.zip' '${{ github.workspace }}/artifacts'
     
-    - run: Copy '${{ github.workspace }}Web\src\MercuryHealth.Sql\bin\Release\MercuryHealth.Sql.dacpac' '${{ github.workspace }}/artifacts'
+    - run: Copy '${{ github.workspace }}\Web\src\MercuryHealth.Sql\bin\Release\MercuryHealth.Sql.dacpac' '${{ github.workspace }}/artifacts'
     
     - uses: actions/upload-artifact@v2
       with:
