@@ -4,9 +4,11 @@ on:
   push:
     branches:
     - master
+    paths-ignore:
+      - azure-pipelines.yml
     
 env:
-  solution: '**/*.sln'
+  solution: 'Web/src/MercuryHealth.sln'
   buildPlatform: Any CPU
   buildConfiguration: Release
 
