@@ -19,25 +19,21 @@ jobs:
     - uses: actions/checkout@v2
     
     - uses: microsoft/setup-msbuild@v1.0.2
+      name: Setup MSBuild
     
     - uses: nuget/setup-nuget@v1
+      name: Setup Nuget
     
     - run: nuget restore ${{ env.solution }}
+      name: Nuget Restore
     
     - run: msbuild '${{ env.solution }}' /p:configuration='${{ env.buildConfiguration }}' /p:platform='${{ env.buildPlatform }}' /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="${{ github.workspace }}"
+      name: Build application
 
     - run: |
-        $vsTestConsoleExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
-        $targetTestDll = "**\*tests.dll
-        !**\*TestAdapter.dll
-        !**\obj\**
-        "
-        $testRunSettings = "/Settings:`"`" "
-        #Note that the `" is an escape character to quote strings, and the `& is needed to start the command
-        $command = "`& `"$vsTestConsoleExe`" `"$targetTestDll`" $testRunSettings $parameters "
-        Write-Host "$command"
-        Invoke-Expression $command
+        echo "Running VSTest"
       shell: powershell
+      name: Run Test cases
       
     - run: Copy '${{ github.workspace }}/**/MercuryHealth.Web.zip' '${{ github.workspace }}/artifacts'
     
@@ -45,7 +41,9 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
+        name: artifacts
         path: ${{ github.workspace }}/artifacts
+      name: Upload artifacts
         
   DeployTest:
     runs-on: [self-hosted, test]
@@ -55,6 +53,10 @@ jobs:
     env:
       group: TestVariables
     steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: artifacts
+        path: artifacts
     - run: |
         echo "Deploying to on-premises IIS using the deploy CMD in the zip"
     - run: |
@@ -68,6 +70,10 @@ jobs:
     env:
       group: ProductionVariables
     steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: artifacts
+        path: artifacts
     - run: |
         echo "Deploying to on-premises IIS using the deploy CMD in the zip"
     - run: |
